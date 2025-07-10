@@ -24,7 +24,7 @@ const Login = () => {
         navigate('/dashboard/owner');
       }
       else {
-        navigate('/dashboard/user');
+        navigate('/');
       }
     }
   };

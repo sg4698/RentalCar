@@ -31,6 +31,7 @@ function App() {
       <ToastContainer />
       <Navbar />
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
@@ -42,14 +43,6 @@ function App() {
           }
         />
 
-        {/* <Route
-          path="/dashboard/owner"
-          element={
-            <ProtectedRoute allowedRoles={["carOwner"]}>
-              <CarOwnerDashboard />
-            </ProtectedRoute>
-          }
-        /> */}
 
  {/* Car Owner Dashboard with Nested Routes */}
         <Route
@@ -80,19 +73,10 @@ function App() {
           }
         />
 
-        <Route path="/" element={<Home />} />
+        
         <Route path="/cars" element={<CarList />} />
         <Route path="createCar" element={<CreateCar />} />
-         {/* <Route path="/dashboard/owner/overview" element={<Overview />} />
-          <Route path="/dashboard/owner/my-cars" element={<MyCars />} />
-          <Route path="/dashboard/owner/createCar" element={<AddCar />} />
-          <Route path="/dashboard/owner/bookings" element={<Bookings />} />
-          <Route path="/dashboard/owner/earnings" element={<Earnings />} />
-          <Route path="/dashboard/owner/messages" element={<Messages />} />
-          <Route path="/dashboard/owner/reviews" element={<Reviews />} />
-          <Route path="/dashboard/owner/notifications" element={<Notifications />} />
-          <Route path="/dashboard/owner/profile" element={<Profile />} />
-          <Route path="/dashboard/owner/support" element={<Support />} /> */}
+
       </Routes>
     </BrowserRouter>
   );

@@ -52,14 +52,14 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              {role === 'carOwner' && (
+              {/* {role === 'carOwner' && (
                 <Link
                   to="/createCar"
                   className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
                 >
                   Rent Your Car
                 </Link>
-              )}
+              )} */}
               {role === 'admin' && (
                 <Link to="/dashboard/admin" className="hover:text-green-600">
                   Admin Dashboard
@@ -70,11 +70,11 @@ export default function Navbar() {
                   Owner Dashboard
                 </Link>
               )}
-              {role === 'user' && (
+              {/* {role === 'user' && (
                 <Link to="/dashboard/user" className="hover:text-green-600">
                   My Rentals
                 </Link>
-              )}
+              )} */}
 
               {/* Profile with Name */}
               <div className="flex items-center bg-gray-100 px-3 py-1 rounded shadow-sm gap-2">
