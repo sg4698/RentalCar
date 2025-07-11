@@ -24,8 +24,19 @@ import Profile from "./pages/dashboard/CarOwnerDashboard/Profile";
 import Notifications from "./pages/dashboard/CarOwnerDashboard/Notifications";
 import Support from "./pages/dashboard/CarOwnerDashboard/Support";
 import AddCar from "./pages/dashboard/CarOwnerDashboard/AddCar";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getCurrentUser } from "./features/auth/authSlice";
+
 function App() {
-  
+   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCurrentUser()).then((res)=>{
+      console.log("Get User response",res)
+    });
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <ToastContainer />

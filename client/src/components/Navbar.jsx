@@ -99,7 +99,7 @@
 
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../features/auth/authSlice';
+import { logoutUser } from '../features/auth/authSlice';
 import { showToast } from '../utils/toast';
 import {
   FaUserCircle,
@@ -122,11 +122,11 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
 
-  const handleLogout = () => {
-    dispatch(logout());
-    showToast('Logged out successfully!');
-    navigate('/');
-  };
+const handleLogout = async () => {
+  await dispatch(logoutUser());
+  showToast('Logged out successfully!');
+  navigate('/');
+};
 
   const handleProtectedNav = (path) => {
     if (!user) {

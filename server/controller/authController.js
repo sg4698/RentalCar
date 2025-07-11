@@ -83,7 +83,7 @@ const login = async (req, res) => {
     // Set token in cookie
     res.cookie("token", token, {
       httpOnly: true,
-      
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
@@ -99,6 +99,15 @@ const login = async (req, res) => {
   }
 };
 
+const getCurrentUser = async (req, res) => {
+  
+  res.status(200).json({
+    name: req.user.name,
+    email: req.user.email,
+    role: req.user.role,
+  });
+};
+
 const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
@@ -108,7 +117,7 @@ const logout = (req, res) => {
   res.status(200).json({ message: "Logged out successfully" });
 };
 
-module.exports = { register, login, logout };
+module.exports = { register, login, logout ,getCurrentUser};
 
 
 
