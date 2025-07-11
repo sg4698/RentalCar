@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   MdDashboard, MdCarRental, MdAddBox, MdBookOnline, MdAttachMoney,
   MdMessage, MdRateReview, MdNotifications, MdPerson, MdHelpOutline,
   MdLogout, MdMenu
 } from "react-icons/md";
-import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { logoutUser } from "../features/auth/authSlice"; // ✅ your async thunk
+// import { toast } from "react-toastify";
+// import { useDispatch } from "react-redux";
+// import { logoutUser } from "../features/auth/authSlice"; // ✅ your async thunk
+import useLogout from "../hooks/useLogout";
 
 const navItems = [
   { name: "Dashboard", path: "/dashboard/owner/overview", icon: <MdDashboard /> },
@@ -26,15 +27,15 @@ const navItems = [
 export default function CarOwnerSidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const toggleSidebar = () => setIsOpen(!isOpen);
+const handleLogout = useLogout()
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await dispatch(logoutUser());
-    toast.success("Logged out successfully!");
-    navigate("/");
-  };
+  // const handleLogout = async () => {
+  //   await dispatch(logoutUser());
+  //   toast.success("Logged out successfully!");
+  //   navigate("/");
+  // };
 
   return (
     <div

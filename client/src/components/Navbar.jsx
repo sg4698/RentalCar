@@ -98,9 +98,9 @@
 // }
 
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser } from '../features/auth/authSlice';
-import { showToast } from '../utils/toast';
+import { useSelector} from 'react-redux';
+// import { logoutUser } from '../features/auth/authSlice';
+// import { showToast } from '../utils/toast';
 import {
   FaUserCircle,
   FaSearch,
@@ -112,21 +112,22 @@ import {
   FaSignOutAlt,
 } from 'react-icons/fa';
 import { useState, useRef, useEffect } from 'react';
+import useLogout from '../hooks/useLogout';
 
 export default function Navbar() {
   const { user, role, name } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
+const handleLogout = useLogout();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
 
-const handleLogout = async () => {
-  await dispatch(logoutUser());
-  showToast('Logged out successfully!');
-  navigate('/');
-};
+// const handleLogout = async () => {
+//   await dispatch(logoutUser());
+//   showToast('Logged out successfully!');
+//   navigate('/');
+// };
 
   const handleProtectedNav = (path) => {
     if (!user) {
