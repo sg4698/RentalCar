@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from "../../features/auth/authSlice";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 
@@ -13,6 +13,8 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+ const location = useLocation();
+  const redirectPath = new URLSearchParams(location.search).get('redirect') || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ const Login = () => {
         navigate('/dashboard/owner');
       }
       else {
-        navigate('/');
+        navigate(redirectPath);
       }
     }
   };
