@@ -142,9 +142,9 @@ const handleLogout = useLogout();
     if (!user || role === 'user') {
       navigate('/');
     } else if (role === 'admin') {
-      navigate('/dashboard/admin');
+      navigate('/dashboard/admin/overview');
     } else if (role === 'carOwner') {
-      navigate('/dashboard/owner');
+      navigate('/dashboard/owner/overview');
     }
   };
 

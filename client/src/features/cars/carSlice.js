@@ -22,9 +22,17 @@ export const deleteCar = createAsyncThunk("/cars/deleteCar", async (carId) => {
   await axioInstance.delete(`/cars/${carId}`);
   return carId;
 });
-export const getMyCars = createAsyncThunk("car/getMyCars", async () => {
-  const res = await axioInstance.get("/cars/my-cars");
-  return res.data.cars;
+
+
+// For CarOwneer
+// ✅ Fetch all cars for the logged-in Car Owner
+export const getMyCars = createAsyncThunk("car/getMyCars", async (_, thunkAPI) => {
+  try {
+    const res = await axioInstance.get("/cars/my-cars");
+    return res.data.cars;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response?.data?.message || err.message);
+  }
 });
 
 const carSlice = createSlice({
@@ -62,8 +70,9 @@ const carSlice = createSlice({
       })
 
   //  Get owner Cars
-        .addCase(getMyCars.pending, (state) => {
+    .addCase(getMyCars.pending, state => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(getMyCars.fulfilled, (state, action) => {
         state.loading = false;
@@ -71,7 +80,7 @@ const carSlice = createSlice({
       })
       .addCase(getMyCars.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
 
       .addCase(deleteCar.pending, (state) => {

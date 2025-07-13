@@ -71,6 +71,10 @@ const carSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  rejectionReason: {
+  type: String,
+  default: null,
+},
   createdAt: {
     type: Date,
     default: Date.now,

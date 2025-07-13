@@ -117,6 +117,7 @@ if (!req.user || req.user.role === "user") {
   }
 };
 
+// For CarOwner(Approve or rejected,pendings)
 const getMyCars = async (req, res) => {
   try {
     const cars = await Car.find({ ownerId: req.user.id });
@@ -211,6 +212,8 @@ const approveCar = async (req,res) => {
       return res.status(404).json({ message: "Car not found" });
      }
       car.isApproved = true;
+      car.rejectionReason = null;
+
     await car.save();
 
         res.status(200).json({ message: "Car approved successfully", car });
@@ -222,7 +225,7 @@ const approveCar = async (req,res) => {
 
 const getPendingCars = async (req, res) => {
   try {
-    const pendingCars = await Car.find({ isApproved: false });
+    const pendingCars = await Car.find({ isApproved: false,rejectionReason: null });
 
     res.status(200).json({ cars: pendingCars });
   } catch (error) {
@@ -232,4 +235,70 @@ const getPendingCars = async (req, res) => {
 };
 
 
-module.exports = { createCar, getAllCars,updateCar,deleteCar,getMyCars,approveCar,getPendingCars}
+const rejectCar = async (req,res) => {
+   try {
+    const {id} = req.params;
+    const { reason } = req.body;
+
+    if(!reason){
+      return res.status(400).json({
+        message:{
+          message: "Rejection reason is required"
+        }
+      })
+    }
+
+    const car = await Car.findById(id);
+    if(!car) {
+      return res.status(404).json({message: "Car not Found"})
+    }
+
+    car.isApproved  = false;
+    car.rejectionReason = reason;
+
+    await car.save();
+      res.status(200).json({ message: "Car rejected successfully", car });
+   } catch (error) {
+    res.status(500).json({ error: error.message });
+   }
+}
+
+// Admin: Get all approved cars
+const getApprovedCars = async (req, res) => {
+  try {
+    const approvedCars = await Car.find({ isApproved: true });
+    res.status(200).json({ cars: approvedCars });
+  } catch (error) {
+    console.error("Error fetching approved cars:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Admin: Get all rejected cars
+const getRejectedCars = async (req, res) => {
+  try {
+    const rejectedCars = await Car.find({
+      isApproved: false,
+      rejectionReason: { $ne: null },
+    });
+    res.status(200).json({ cars: rejectedCars });
+  } catch (error) {
+    console.error("Error fetching rejected cars:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+module.exports = { 
+  createCar, 
+  getAllCars,
+  updateCar,
+  deleteCar,
+  getMyCars,
+  approveCar,
+  getPendingCars,
+  rejectCar,
+  getApprovedCars,
+  getRejectedCars
+}
