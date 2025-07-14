@@ -154,7 +154,7 @@ import AddCar from "./pages/dashboard/CarOwnerDashboard/AddCar";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getCurrentUser } from "./features/auth/authSlice";
-import EditCar from "./pages/dashboard/AdminDashboard/Cars/EditCar";
+import EditCar from "./pages/Car/EditCar";
 
 function App() {
   const dispatch = useDispatch();
@@ -196,6 +196,7 @@ function App() {
           <Route path="overview" element={<COOverview />} />
           <Route path="my-cars" element={<MyCars />} />
           <Route path="createCar" element={<AddCar />} />
+          <Route path="update-car/:id" element={<EditCar/>} />
           <Route path="bookings" element={<Bookings />} />
           <Route path="earnings" element={<Earnings />} />
           <Route path="messages" element={<Messages />} />

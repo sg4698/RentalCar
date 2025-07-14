@@ -7,15 +7,16 @@
 // export default CarOwnerDashboard;
 
 
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import CarOwnerSidebar from '../../../components/CarOwnerSidebar';
 
 const CarOwnerDashboard = () => {
+  const location = useLocation();
   return (
     <div className="flex min-h-screen bg-white-50  text-gray-900">
       <CarOwnerSidebar />
       <div className="flex-1 p-6 overflow-y-auto">
-        <Outlet />
+        <Outlet key={location.pathname}  />
       </div>
     </div>
   );

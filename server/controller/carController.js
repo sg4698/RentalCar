@@ -129,6 +129,27 @@ const getMyCars = async (req, res) => {
 };
 
 
+// Get Car by ID
+const getCarById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const car = await Car.findById(id).select(
+      "car_name brand registrationNumber color type seats fuelType transmission mileage rentalPricePerDay location image"
+    );
+
+    if (!car) {
+      return res.status(404).json({ message: "Car not found" });
+    }
+
+    res.status(200).json({ car });
+  } catch (error) {
+    console.error("Error fetching car:", error.message);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+// Update Car
 const updateCar = async (req,res) => {
   try {
     const {id} = req.params;
@@ -295,6 +316,7 @@ module.exports = {
   getAllCars,
   updateCar,
   deleteCar,
+  getCarById,
   getMyCars,
   approveCar,
   getPendingCars,

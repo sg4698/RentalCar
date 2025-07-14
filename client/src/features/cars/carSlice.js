@@ -12,6 +12,7 @@ export const createCar = createAsyncThunk("car/createCar", async (formData) => {
   return res.data.car;
 });
 
+
 // Fetch all cars
 export const fetchCars = createAsyncThunk("car/fetchCars", async () => {
   const res = await axioInstance.get("/cars/getAllCars");
@@ -23,8 +24,24 @@ export const deleteCar = createAsyncThunk("/cars/deleteCar", async (carId) => {
   return carId;
 });
 
+export const getCarById = createAsyncThunk("car/getById", async (id) => {
+  const res = await axioInstance.get(`/cars/getbyId/${id}`);
+  return res.data.car;
+});
 
-// For CarOwneer
+export const updateCar = createAsyncThunk("car/update", async ({ id, formData }, { rejectWithValue }) => {
+  try {
+    const res = await axioInstance.put(`/cars/update/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    // toast.success("Car updated successfully");
+    return res.data.car;
+  } catch (err) {
+    // toast.error("Failed to update car");
+    return rejectWithValue(err.response.data);
+  }
+});
+
 // ✅ Fetch all cars for the logged-in Car Owner
 export const getMyCars = createAsyncThunk("car/getMyCars", async (_, thunkAPI) => {
   try {
@@ -39,6 +56,7 @@ const carSlice = createSlice({
   name: "car",
   initialState: {
     cars: [],
+    car: null,
     myCars : [],
     loading: false,
     error: null,
@@ -79,6 +97,27 @@ const carSlice = createSlice({
         state.myCars = action.payload;
       })
       .addCase(getMyCars.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+     .addCase(getCarById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+     .addCase(getCarById.fulfilled, (state, action) => {
+  state.loading = false;
+  state.car = action.payload;
+})
+      .addCase(getCarById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateCar.pending, state => { state.loading = true; })
+      .addCase(updateCar.fulfilled, (state, action) => {
+        state.loading = false;
+        state.car = action.payload;
+      })
+      .addCase(updateCar.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
