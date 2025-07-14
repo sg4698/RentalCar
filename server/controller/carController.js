@@ -209,10 +209,10 @@ const deleteCar = async (req,res) => {
       return res.status(404).json({ message: "Car not found" });
     }
 
-    // Delete image from Cloudinary
-        if (car.image && car.image.public_id) {
-      await cloudinary.uploader.destroy(car.image.public_id);
-    }
+    // // Delete image from Cloudinary
+    //     if (car.image && car.image.public_id) {
+    //   await cloudinary.uploader.destroy(car.image.public_id);
+    // }
      
     await Car.findByIdAndDelete(id);
      res.status(200).json({ message: "Car deleted successfully" });
@@ -222,28 +222,7 @@ const deleteCar = async (req,res) => {
   }
 }
 
-
-
-const approveCar = async (req,res) => {
-   try {
-    const {id}  = req.params;
-
-    const car = await Car.findById(id);
-     if(!car){
-      return res.status(404).json({ message: "Car not found" });
-     }
-      car.isApproved = true;
-      car.rejectionReason = null;
-
-    await car.save();
-
-        res.status(200).json({ message: "Car approved successfully", car });
-   } catch (error) {
-      console.error("Error approving car:", error.message);
-    res.status(500).json({ error: error.message });
-   }
-}
-
+// For Admin to We Pending Cars for Admin
 const getPendingCars = async (req, res) => {
   try {
     const pendingCars = await Car.find({ isApproved: false,rejectionReason: null });
@@ -255,7 +234,29 @@ const getPendingCars = async (req, res) => {
   }
 };
 
+//ApproveCar For Admin
+const approveCar = async (req,res) => {
+   try {
+    const {id}  = req.params;
 
+    const car = await Car.findById(id);
+     if(!car){
+      return res.status(404).json({ message: "Car not found" });
+     }
+      car.isApproved = true;
+      // car.rejectionReason = null;
+
+    await car.save();
+
+        res.status(200).json({ message: "Car approved successfully", car });
+   } catch (error) {
+      console.error("Error approving car:", error.message);
+    res.status(500).json({ error: error.message });
+   }
+}
+
+
+//reject Car by Admin
 const rejectCar = async (req,res) => {
    try {
     const {id} = req.params;
