@@ -15,9 +15,9 @@ router.put("/update/:id", protect(["carOwner"]), upload.array("image", 10), upda
 //  CarOwner or Admin: Delete car
 router.delete("/delete/:id", protect(["carOwner", "admin"]), deleteCar);
 // Admin-only: Approve car
-router.patch("/:id/approve", protect(["admin"]), approveCar);
+router.patch("/approve/:id", protect(["admin"]), approveCar);
 // To reject a Car
-router.patch("/:id/reject", protect(["admin"]), rejectCar); 
+router.patch("/reject/:id", protect(["admin"]), rejectCar); 
 // Fetch Pending Cars
 router.get('/getPendingCars', protect(["admin"]),getPendingCars);
 //To Fetch a Aprroval Car

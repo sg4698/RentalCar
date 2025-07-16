@@ -20,9 +20,9 @@ const CarCardBase = ({ car, status, actions, ownerName }) => {
 
       {/* Car Info */}
       <div className="p-4">
-        {/* Owner name (optional) */}
+        {/* Owner Name */}
         {ownerName && (
-          <p className="text-sm font-semibold text-gray-700 mb-1">
+          <p className="text-sm text-gray-700 font-semibold mb-1">
             Owner: <span className="font-bold">{ownerName}</span>
           </p>
         )}

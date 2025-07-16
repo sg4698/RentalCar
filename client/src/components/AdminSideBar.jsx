@@ -199,9 +199,12 @@ const AdminSidebar = () => {
       </SidebarItem>
 
       <SidebarItem icon={MdDirectionsCar} label="Car Management">
-        {renderSubLink("/dashboard/admin/cars", "All Cars")}
-        {renderSubLink("/dashboard/admin/cars/pending", "Pending Approvals")}
-        {renderSubLink("/dashboard/admin/cars/edit", "Edit/Delete Cars")}
+          {renderSubLink("/dashboard/admin/cars/pending", "Pending Cars")}
+            {renderSubLink("/dashboard/admin/cars/approved", "Approved Cars")}
+              {renderSubLink("/dashboard/admin/cars/rejected", "Rejected Cars")}
+        {/* {renderSubLink("/dashboard/admin/cars", "All Cars")} */}
+        {/* {renderSubLink("/dashboard/admin/cars/pending", "Pending Cars")} */}
+        {/* {renderSubLink("/dashboard/admin/cars/edit", "Edit/Delete Cars")} */}
       </SidebarItem>
 
       <SidebarItem icon={MdAttachMoney} label="Booking Management">

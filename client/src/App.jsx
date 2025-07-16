@@ -108,8 +108,11 @@ import AdminDashboard from "./pages/dashboard/AdminDashboard/AdminDashboard";
 import Overview from "./pages/dashboard/AdminDashboard/Overviews/OverView";
 import AllUsers from "./pages/dashboard/AdminDashboard/Users/AllUsers";
 import BannedUsers from "./pages/dashboard/AdminDashboard/Users/BannedUsers";
-import AllCars from "./pages/dashboard/AdminDashboard/Cars/AllCars";
-import PendingCars from "./pages/dashboard/AdminDashboard/Cars/PendingApprovals";
+import PendingCars from "./pages/dashboard/AdminDashboard/Cars/PendingCars";
+import ApprovedCars from "./pages/dashboard/AdminDashboard/Cars/ApprovedCars";
+import RejectedCars from "./pages/dashboard/AdminDashboard/Cars/RejectCars";
+// import AllCars from "./pages/dashboard/AdminDashboard/Cars/AllCars";
+// import PendingCars from "./pages/dashboard/AdminDashboard/Cars/PendingApprovals";
 import AllBookings from "./pages/dashboard/AdminDashboard/Bookings/AllBookings";
 import FraudulentBookings from "./pages/dashboard/AdminDashboard/Bookings/FraudulentBookings";
 import PlatformEarnings from "./pages/dashboard/AdminDashboard/Earnings/PlatformEarnings";
@@ -155,6 +158,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getCurrentUser } from "./features/auth/authSlice";
 import EditCar from "./pages/Car/EditCar";
+import CarDetails from "./components/carDetails";
 
 function App() {
   const dispatch = useDispatch();
@@ -223,8 +227,11 @@ function App() {
           <Route path="users/banned" element={<BannedUsers />} />
 
           {/* Car Management */}
-          <Route path="cars" element={<AllCars />} />
-          <Route path="cars/pending" element={<PendingCars />} />
+           <Route path="cars/pending" element={<PendingCars />} />
+                     <Route path="cars/approved" element={<ApprovedCars />} />
+                               <Route path="cars/rejected" element={<RejectedCars />} />
+          {/* <Route path="cars" element={<AllCars />} /> */}
+          {/* <Route path="cars/pending" element={<PendingCars />} /> */}
           <Route path="cars/edit" element={<EditCar />} />
           {/* Bookings Management */}
           <Route path="bookings" element={<AllBookings />} />
@@ -271,6 +278,7 @@ function App() {
         {/* Car Routes */}
         <Route path="/cars" element={<CarList />} />
         <Route path="/createCar" element={<CreateCar />} />
+        <Route path="/cars/:id" element={<CarDetails />} />
       </Routes>
     </BrowserRouter>
   );

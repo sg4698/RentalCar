@@ -134,9 +134,11 @@ const getCarById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const car = await Car.findById(id).select(
-      "car_name brand registrationNumber color type seats fuelType transmission mileage rentalPricePerDay location image"
-    );
+    const car = await Car.findById(id)
+      .select(
+        "car_name brand registrationNumber color type seats fuelType transmission mileage rentalPricePerDay location image ownerId"
+      )
+      .populate("ownerId", "name email"); // ✅ Important line
 
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
@@ -148,6 +150,24 @@ const getCarById = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
+
+// const getCarById = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const car = await Car.findById(id).select(
+//       "car_name brand registrationNumber color type seats fuelType transmission mileage rentalPricePerDay location image "
+//     )
+//     if (!car) {
+//       return res.status(404).json({ message: "Car not found" });
+//     }
+
+//     res.status(200).json({ car });
+//   } catch (error) {
+//     console.error("Error fetching car:", error.message);
+//     res.status(500).json({ message: "Internal Server Error", error: error.message });
+//   }
+// };
 
 // Update Car
 const updateCar = async (req,res) => {
@@ -225,9 +245,9 @@ const deleteCar = async (req,res) => {
 // For Admin to We Pending Cars for Admin
 const getPendingCars = async (req, res) => {
   try {
-    const pendingCars = await Car.find({ isApproved: false,rejectionReason: null });
-
-    res.status(200).json({ cars: pendingCars });
+ const pendingCars = await Car.find({ isApproved: false, rejectionReason: null })
+      .populate("ownerId", "name email");
+      res.status(200).json({ cars: pendingCars });
   } catch (error) {
     console.error("Error fetching pending cars:", error.message);
     res.status(500).json({ error: error.message });
@@ -288,7 +308,8 @@ const rejectCar = async (req,res) => {
 // Admin: Get all approved cars
 const getApprovedCars = async (req, res) => {
   try {
-    const approvedCars = await Car.find({ isApproved: true });
+      const approvedCars = await Car.find({ isApproved: true })
+      .populate("ownerId", "name email");
     res.status(200).json({ cars: approvedCars });
   } catch (error) {
     console.error("Error fetching approved cars:", error.message);
@@ -302,7 +323,7 @@ const getRejectedCars = async (req, res) => {
     const rejectedCars = await Car.find({
       isApproved: false,
       rejectionReason: { $ne: null },
-    });
+    }).populate("ownerId", "name email");
     res.status(200).json({ cars: rejectedCars });
   } catch (error) {
     console.error("Error fetching rejected cars:", error.message);
