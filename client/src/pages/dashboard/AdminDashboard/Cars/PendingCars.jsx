@@ -61,6 +61,7 @@ import CarTable from "../../../../components/CarTable";
 import { toast } from "react-toastify";
 
 const PendingCars = () => {
+
   const dispatch = useDispatch();
   const { pending, loading } = useSelector((state) => state.adminCar);
 console.log(pending)
@@ -82,6 +83,7 @@ console.log(pending)
     dispatch(fetchPendingCars());
   };
 
+  
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Pending Cars</h1>
