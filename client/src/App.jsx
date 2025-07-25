@@ -278,7 +278,7 @@ function App() {
         {/* Car Routes */}
         <Route path="/cars" element={<CarList />} />
         <Route path="/createCar" element={<CreateCar />} />
-        <Route path="/cars/:id" element={<CarDetails />} />
+        <Route path="/car/:id" element={<CarDetails />} />
       </Routes>
     </BrowserRouter>
   );

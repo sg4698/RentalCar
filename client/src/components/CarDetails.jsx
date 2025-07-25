@@ -8,17 +8,23 @@ const CarDetails = () => {
   const dispatch = useDispatch();
 
   const { car, loading } = useSelector((state) => state.car);
-  const { user } = useSelector((state) => state.auth);
-console.log(car)
-  const role = user?.role || "user";
-  const showOwner = role === "admin";
+  const { user, loading: userLoading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (id) dispatch(getCarById(id));
   }, [id, dispatch]);
 
-  if (loading) return <p className="text-center mt-10 text-blue-500">Loading car details...</p>;
-  if (!car) return <p className="text-center mt-10 text-gray-500">Car not found.</p>;
+  if (loading || userLoading) {
+    return <p className="text-center mt-10 text-blue-500">Loading car details...</p>;
+  }
+
+  if (!car) {
+    return <p className="text-center mt-10 text-gray-500">Car not found.</p>;
+  }
+
+  const role = user?.role;
+  console.log(role)
+  const showOwner = role === "admin";
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -26,7 +32,7 @@ console.log(car)
 
       <div className="flex flex-col md:flex-row gap-8">
         <img
-          src={car.image?.url || car.image}
+          src={car.image?.url || car.image || "/placeholder-car.jpg"}
           alt={car.car_name}
           className="w-full md:w-1/2 h-64 object-cover rounded-lg shadow"
         />
@@ -45,8 +51,8 @@ console.log(car)
 
           {showOwner && (
             <>
-              <p><strong>Owner Name:</strong> {car.ownerId?.name}</p>
-              <p><strong>Email:</strong> {car.ownerId?.email}</p>
+              <p><strong>Owner Name:</strong> {car.ownerId?.name || "N/A"}</p>
+              <p><strong>Email:</strong> {car.ownerId?.email || "N/A"}</p>
             </>
           )}
         </div>

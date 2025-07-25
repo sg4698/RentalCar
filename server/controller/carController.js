@@ -135,11 +135,9 @@ const getCarById = async (req, res) => {
     const { id } = req.params;
 
     const car = await Car.findById(id)
-      .select(
-        "car_name brand registrationNumber color type seats fuelType transmission mileage rentalPricePerDay location image ownerId"
-      )
-      .populate("ownerId", "name email"); // ✅ Important line
-
+      .select("car_name brand registrationNumber color type seats fuelType transmission mileage rentalPricePerDay location image ownerId")
+      .populate("ownerId", "name email"); // ✅
+  
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
     }

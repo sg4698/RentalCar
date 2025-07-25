@@ -72,7 +72,7 @@ import { Link } from "react-router-dom";
 
 const CarTable = ({ cars, type, onApprove, onReject, role = "user" }) => {
   const showOwner = role === "admin";
-
+  console.log("Car Table",role)
   return (
     <div className="overflow-x-auto shadow rounded-lg">
       <table className="min-w-full bg-white">
@@ -88,7 +88,9 @@ const CarTable = ({ cars, type, onApprove, onReject, role = "user" }) => {
             {type === "rejected" && (
               <th className="py-3 px-4 text-left">Rejection Reason</th>
             )}
-            {type === "status" && <th className="py-3 px-4 text-left">Status</th>}
+            {type === "status" && (
+              <th className="py-3 px-4 text-left">Status</th>
+            )}
             <th className="py-3 px-4 text-center">Details</th>
           </tr>
         </thead>
@@ -131,28 +133,34 @@ const CarTable = ({ cars, type, onApprove, onReject, role = "user" }) => {
               )}
 
               {type === "rejected" && (
-                <td className="py-2 px-4 text-red-500">{car.rejectionReason}</td>
+                <td className="py-2 px-4 text-red-500">
+                  {car.rejectionReason}
+                </td>
               )}
 
               {type === "status" && (
                 <td className="py-2 px-4">
                   {car.isApproved ? (
-                    <span className="text-green-600 font-semibold">Approved</span>
+                    <span className="text-green-600 font-semibold">
+                      Approved
+                    </span>
                   ) : car.rejectionReason ? (
                     <span className="text-red-500 font-semibold">Rejected</span>
                   ) : (
-                    <span className="text-yellow-500 font-semibold">Pending</span>
+                    <span className="text-yellow-500 font-semibold">
+                      Pending
+                    </span>
                   )}
                 </td>
               )}
 
               <td className="py-2 px-4 text-center">
-               <Link
-  to={`/car/${car._id}`}
-  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
->
-  View Details
-</Link>
+                <Link
+                  to={`/dashboard/admin/car/${car._id}`}
+                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                >
+                  View Details
+                </Link>
               </td>
             </tr>
           ))}
