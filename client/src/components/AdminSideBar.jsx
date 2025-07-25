@@ -192,13 +192,13 @@ const AdminSidebar = () => {
         <span className="whitespace-nowrap">Overview</span>
       </NavLink>
 
-      <SidebarItem icon={MdPeople} label="User Management">
+      <SidebarItem icon={MdPeople} label="User">
         {renderSubLink("/dashboard/admin/users", "All Users")}
         {renderSubLink("/dashboard/admin/users/banned", "Banned Users")}
         {renderSubLink("/dashboard/admin/users/filter", "Filter by Role")}
       </SidebarItem>
 
-      <SidebarItem icon={MdDirectionsCar} label="Car Management">
+      <SidebarItem icon={MdDirectionsCar} label="Car">
           {renderSubLink("/dashboard/admin/cars/pending", "Pending Cars")}
             {renderSubLink("/dashboard/admin/cars/approved", "Approved Cars")}
               {renderSubLink("/dashboard/admin/cars/rejected", "Rejected Cars")}z
@@ -207,7 +207,7 @@ const AdminSidebar = () => {
         {/* {renderSubLink("/dashboard/admin/cars/edit", "Edit/Delete Cars")} */}
       </SidebarItem>
 
-      <SidebarItem icon={MdAttachMoney} label="Booking Management">
+      <SidebarItem icon={MdAttachMoney} label="Booking">
         {renderSubLink("/dashboard/admin/bookings", "All Bookings")}
         {renderSubLink("/dashboard/admin/bookings/fraud", "Fraudulent Bookings")}
       </SidebarItem>
