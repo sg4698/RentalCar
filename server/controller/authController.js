@@ -117,7 +117,55 @@ const logout = (req, res) => {
   res.status(200).json({ message: "Logged out successfully" });
 };
 
-module.exports = { register, login, logout ,getCurrentUser};
+// Get all users (For Admin) with pagination, search, and role filter
+// Get all users (For Admin) with pagination, search, and role filter (excluding admins)
+const getAllUsers = async (req, res) => {
+  try {
+    // Only allow admin to access
+    if (req.user?.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const { page = 1, limit = 6, role, search } = req.query;
+
+    const query = {
+      role: { $ne: "admin" }, // ✅ Always exclude admin users
+    };
+
+    // Optional role filter (only if not "admin")
+    if (role && role !== "admin") {
+      query.role = role;
+    }
+
+    // Optional search filter (name or email)
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const totalUsers = await User.countDocuments(query);
+
+    const users = await User.find(query)
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .select("-password") // Do not return passwords
+      .sort({ createdAt: -1 }); // Latest first
+
+    res.status(200).json({
+      users,
+      totalPages: Math.ceil(totalUsers / limit),
+      currentPage: Number(page),
+      totalUsers,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+module.exports = { register, login, logout ,getCurrentUser,getAllUsers};
 
 
 
