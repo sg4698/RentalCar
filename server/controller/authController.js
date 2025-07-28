@@ -74,6 +74,14 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Password is incorrect" });
     }
 
+        // ✅ Check if the account is deactivated
+    if (!user.isActive) {
+      return res.status(403).json({
+        message: "Your account has been deactivated.Contact by email",
+        reason: user.deactivationReason || "No reason provided.",
+      });
+    }
+
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -151,6 +159,7 @@ const getAllUsers = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(Number(limit))
       .select("-password") // Do not return passwords
+       .select("name email role isActive deactivationReason") 
       .sort({ createdAt: -1 }); // Latest first
 
     res.status(200).json({
@@ -165,7 +174,40 @@ const getAllUsers = async (req, res) => {
 };
 
 
-module.exports = { register, login, logout ,getCurrentUser,getAllUsers};
+
+// Admin:Active or Deactive a User
+const updateUserStatus = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { isActive, reason } = req.body;
+    const adminId = req.user._id; // assuming user is authenticated
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.isActive = isActive;
+
+    if (!isActive) {
+      user.deactivationReason = reason;
+    } else {
+      user.deactivationReason = ""; // Clear reason on reactivation
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: `User ${isActive ? "activated" : "deactivated"} successfully`,
+      user,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+};
+
+module.exports = { register, login, logout ,getCurrentUser,getAllUsers,updateUserStatus};
 
 
 

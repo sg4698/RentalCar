@@ -171,9 +171,11 @@
 // };
 
 // export default CarTable;
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const CarTable = ({ cars, type, onApprove, onReject, role = "user" }) => {
+    const navigate = useNavigate();
+
   const showOwner = role === "admin";
   console.log("Car Table", role);
 
@@ -264,12 +266,12 @@ const CarTable = ({ cars, type, onApprove, onReject, role = "user" }) => {
               )}
 
               <td className="py-2 px-4 text-center align-middle">
-                <Link
-                  to={`/car/${car._id}`}
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                <button
+                  onClick={() => navigate(`/car/${car._id}`)}
+                  className="block text-center bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition duration-200"
                 >
                   View Details
-                </Link>
+                </button>
               </td>
             </tr>
           ))}

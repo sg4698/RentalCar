@@ -4,7 +4,7 @@ import axios from "../../services/axiosInstance";
 // Async thunk to fetch all users (excluding admin)
 export const fetchAllUsers = createAsyncThunk(
   "users/fetchAll",
-  async ({ page = 1, limit = 10, role = "", search = "" }, { rejectWithValue }) => {
+  async ({ page = 1, limit = 6, role = "", search = "" }, { rejectWithValue }) => {
     try {
       const res = await axios.get(`/auth/users`, {
         params: { page, limit, role, search },
@@ -12,6 +12,22 @@ export const fetchAllUsers = createAsyncThunk(
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response.data.message || "Failed to fetch users");
+    }
+  }
+);
+
+// ✅ Thunk to update user activation status
+export const updateUserStatus = createAsyncThunk(
+  "users/updateUserStatus",
+  async ({ userId, isActive, reason }, thunkAPI) => {
+    try {
+      const { data } = await axios.patch(`/api/users/status/${userId}`, {
+        isActive,
+        reason,
+      });
+      return data.user;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
   }
 );
@@ -43,6 +59,21 @@ const userSlice = createSlice({
       .addCase(fetchAllUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      .addCase(updateUserStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = state.users.map((user) =>
+          user._id === action.payload._id ? action.payload : user
+        );
+      })
+      .addCase(updateUserStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update user status";
       });
   },
 });

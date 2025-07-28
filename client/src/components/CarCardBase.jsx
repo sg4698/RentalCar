@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
 
 const CarCardBase = ({ car, status, actions, ownerName }) => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
+      const handleViewDetails = () => {
+    navigate(`/car/${car._id}`);
+  };
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition">
       {/* Car Image */}
@@ -45,9 +48,9 @@ const CarCardBase = ({ car, status, actions, ownerName }) => {
         {/* Action Row: Edit/Delete Left + View Right */}
         <div className="flex justify-between items-center mt-4">
           <div>{actions}</div>
-          <button
-            onClick={() => navigate(`/cars/${car._id}`)}
-            className="bg-gray-800 text-white text-sm px-3 py-1 rounded hover:bg-gray-700 transition"
+             <button
+            onClick={handleViewDetails}
+            className="block text-center bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition duration-200"
           >
             View Details
           </button>

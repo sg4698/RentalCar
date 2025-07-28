@@ -194,8 +194,8 @@ const AdminSidebar = () => {
 
       <SidebarItem icon={MdPeople} label="User">
         {renderSubLink("/dashboard/admin/users", "All Users")}
-        {renderSubLink("/dashboard/admin/users/banned", "Banned Users")}
-        {renderSubLink("/dashboard/admin/users/filter", "Filter by Role")}
+        {/* {renderSubLink("/dashboard/admin/users/banned", "Banned Users")} */}
+        {/* {renderSubLink("/dashboard/admin/users/filter", "Filter by Role")} */}
       </SidebarItem>
 
       <SidebarItem icon={MdDirectionsCar} label="Car">
