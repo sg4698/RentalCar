@@ -21,7 +21,7 @@ export const updateUserStatus = createAsyncThunk(
   "users/updateUserStatus",
   async ({ userId, isActive, reason }, thunkAPI) => {
     try {
-      const { data } = await axios.patch(`/api/users/status/${userId}`, {
+      const { data } = await axios.patch(`/auth/status/${userId}`, {
         isActive,
         reason,
       });
