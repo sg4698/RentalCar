@@ -10,14 +10,15 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "carOwner", "admin"],
       default: "user",
     },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-      deactivationReason: {
-    type: String,
-    default: "",
-  },
+ status: {
+  type: String,
+  enum: ["active", "deactivated"],
+  default: "active",
+},
+deactivationReason: {
+  type: String,
+  default: "",
+},
   },
   { timestamps: true }
 );

@@ -126,29 +126,28 @@
 //   );
 // };
 
-// export default UserTable;
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { updateUserStatus } from "../../features/users/userSlice";
 import { toast } from "react-toastify";
-import Modal from "../Modal"; // Import your reusable modal
+import Modal from "../Modal";
 
 const UserTable = ({ users }) => {
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedReason, setSelectedReason] = useState("");
 
-  const handleStatusChange = async (userId, isActive) => {
+  const handleStatusChange = async (userId, status) => {
     let reason = "";
-    if (!isActive) {
+    if (status === "deactivated") {
       reason = prompt("Enter reason for deactivation:");
       if (!reason) return toast.error("Deactivation reason required");
     }
 
-    dispatch(updateUserStatus({ userId, isActive, reason }))
+    dispatch(updateUserStatus({ userId, status, reason }))
       .unwrap()
       .then(() => {
-        toast.success(`User ${isActive ? "activated" : "deactivated"} successfully`);
+        toast.success(`User ${status === "active" ? "activated" : "deactivated"} successfully`);
       })
       .catch((err) => toast.error(err));
   };
@@ -187,7 +186,7 @@ const UserTable = ({ users }) => {
                 <td className="p-3">{user.email}</td>
                 <td className="p-3 capitalize">{user.role}</td>
                 <td className="p-3">
-                  {user.isActive ? (
+                  {user.status === "active" ? (
                     <span className="text-green-600 font-semibold">Activated</span>
                   ) : (
                     <button
@@ -199,16 +198,16 @@ const UserTable = ({ users }) => {
                   )}
                 </td>
                 <td className="p-3">
-                  {user.isActive ? (
+                  {user.status === "active" ? (
                     <button
-                      onClick={() => handleStatusChange(user._id, false)}
+                      onClick={() => handleStatusChange(user._id, "deactivated")}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
                       Deactivate
                     </button>
                   ) : (
                     <button
-                      onClick={() => handleStatusChange(user._id, true)}
+                      onClick={() => handleStatusChange(user._id, "active")}
                       className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
                     >
                       Activate
@@ -221,7 +220,6 @@ const UserTable = ({ users }) => {
         </tbody>
       </table>
 
-      {/* Reusable Modal */}
       <Modal isOpen={modalOpen} onClose={closeModal} title="Deactivation Reason">
         <p className="text-gray-700">{selectedReason}</p>
       </Modal>
@@ -230,4 +228,5 @@ const UserTable = ({ users }) => {
 };
 
 export default UserTable;
+
 

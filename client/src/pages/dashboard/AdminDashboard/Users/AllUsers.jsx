@@ -3,50 +3,81 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllUsers } from "../../../../features/users/userSlice";
 import UserTable from "../../../../components/tables/UserTable";
 import Pagination from "../../../../components/Pagination";
+
 const AllUsers = () => {
   const dispatch = useDispatch();
-  const { users, error, totalPages,currentPage } = useSelector((state) => state.users);
+  const { users, error, totalPages } = useSelector((state) => state.users);
 
-  const [role, setRole] = useState("");
-  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({
+    role: "",
+    status: "",
+    page: 1,
+  });
 
+  // Fetch users with filters
   useEffect(() => {
-    // Passing search as empty string, since it's removed from this folder only
-    dispatch(fetchAllUsers({ page, search: "", role }));
-  }, [dispatch, page, role]);
+    const delay = setTimeout(() => {
+      dispatch(fetchAllUsers({
+        page: filters.page,
+        search: "",
+        role: filters.role,
+        status: filters.status,
+      }));
+    }, 100); // Debounce
 
-  
+    return () => clearTimeout(delay);
+  }, [dispatch, filters]);
+
+  const handleChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value, page: 1 });
+  };
+
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
-      setPage(newPage);
+      setFilters((prev) => ({ ...prev, page: newPage }));
     }
   };
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-semibold mb-4">All Users</h1>
 
+      {/* Filters */}
       <div className="flex flex-wrap items-center gap-4 mb-4">
         <select
+          name="role"
           className="border px-3 py-2 rounded"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
+          value={filters.role}
+          onChange={handleChange}
         >
           <option value="">All Roles</option>
           <option value="user">User</option>
           <option value="carOwner">Car Owner</option>
         </select>
+
+        <select
+          name="status"
+          className="border px-3 py-2 rounded"
+          value={filters.status}
+          onChange={handleChange}
+        >
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="deactivated">Deactivated</option>
+        </select>
       </div>
 
+      {/* User Table & Pagination */}
       {error ? (
         <p className="text-red-500">{error}</p>
       ) : (
         <>
-        <UserTable users={users} />
-        <Pagination
-         currentPage={page}
-  totalPages={totalPages}
-  onPageChange={handlePageChange} 
-  />
+          <UserTable users={users} />
+          <Pagination
+            currentPage={filters.page}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </>
       )}
     </div>

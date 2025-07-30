@@ -25,6 +25,7 @@ const register = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+        status: "active",
     });
 
     res
@@ -126,15 +127,16 @@ const logout = (req, res) => {
 };
 
 // Get all users (For Admin) with pagination, search, and role filter
-// Get all users (For Admin) with pagination, search, and role filter (excluding admins)
+
 const getAllUsers = async (req, res) => {
   try {
     // Only allow admin to access
-    if (req.user?.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+    // if (req.user?.role !== "admin") {
+    //   return res.status(403).json({ message: "Access denied" });
+    // }
+   
 
-    const { page = 1, limit = 6, role, search } = req.query;
+    const { page = 1, limit = 6, role, search,status } = req.query;
 
     const query = {
       role: { $ne: "admin" }, // ✅ Always exclude admin users
@@ -145,6 +147,10 @@ const getAllUsers = async (req, res) => {
       query.role = role;
     }
 
+        // Optional isActive filter
+  if (status && ["active", "deactivated"].includes(status)) {
+  query.status = status;
+}
     // Optional search filter (name or email)
     if (search) {
       query.$or = [
@@ -159,7 +165,7 @@ const getAllUsers = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(Number(limit))
       .select("-password") // Do not return passwords
-       .select("name email role isActive deactivationReason") 
+       .select("name email role status deactivationReason") 
       .sort({ createdAt: -1 }); // Latest first
 
     res.status(200).json({
@@ -175,37 +181,40 @@ const getAllUsers = async (req, res) => {
 
 
 
-// Admin:Active or Deactive a User
 const updateUserStatus = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { isActive, reason } = req.body;
-    const adminId = req.user._id; // assuming user is authenticated
+    const { status, reason } = req.body;
+    const adminId = req.user._id;
+
+    if (!["active", "deactivated"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
 
     const user = await User.findById(userId);
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.isActive = isActive;
+    user.status = status;
 
-    if (!isActive) {
-      user.deactivationReason = reason;
+    if (status === "deactivated") {
+      user.deactivationReason = reason || "No reason provided";
     } else {
-      user.deactivationReason = ""; // Clear reason on reactivation
+      user.deactivationReason = "";
     }
 
     await user.save();
 
     res.status(200).json({
-      message: `User ${isActive ? "activated" : "deactivated"} successfully`,
+      message: `User ${status === "active" ? "activated" : "deactivated"} successfully`,
       user,
     });
   } catch (err) {
     res.status(500).json({ message: "Server Error", error: err.message });
   }
 };
+
 
 module.exports = { register, login, logout ,getCurrentUser,getAllUsers,updateUserStatus};
 

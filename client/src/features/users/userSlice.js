@@ -4,10 +4,10 @@ import axios from "../../services/axiosInstance";
 // Async thunk to fetch all users (excluding admin)
 export const fetchAllUsers = createAsyncThunk(
   "users/fetchAll",
-  async ({ page = 1, limit = 6, role = "", search = "" }, { rejectWithValue }) => {
+  async ({ page = 1, limit = 6, role = "", search = "",status  }, { rejectWithValue }) => {
     try {
       const res = await axios.get(`/auth/users`, {
-        params: { page, limit, role, search },
+        params: { page, limit, role, search,status  },
       });
       return res.data;
     } catch (err) {
@@ -19,10 +19,10 @@ export const fetchAllUsers = createAsyncThunk(
 // ✅ Thunk to update user activation status
 export const updateUserStatus = createAsyncThunk(
   "users/updateUserStatus",
-  async ({ userId, isActive, reason }, thunkAPI) => {
+  async ({ userId, status, reason }, thunkAPI) => {
     try {
       const { data } = await axios.patch(`/auth/status/${userId}`, {
-        isActive,
+         status,
         reason,
       });
       return data.user;
