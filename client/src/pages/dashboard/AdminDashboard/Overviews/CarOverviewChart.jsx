@@ -16,6 +16,7 @@ const CarOverviewChart = ({ pending = [], approved = [], rejected = [], loading 
       data={data}
       colors={COLORS}
       loading={loading}
+      unit="cars" // This will be used in the tooltip
     />
   );
 };

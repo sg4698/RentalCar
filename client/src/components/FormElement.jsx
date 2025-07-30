@@ -4,7 +4,6 @@ export const RenderInput = ({ name, value, onChange, type = "text", label }) => 
   <div className="flex flex-col">
     <label className="text-sm font-medium text-gray-700 mb-1 capitalize">
       {label || name}
-      <span className="text-red-500 ml-1">*</span>
     </label>
     <input
       type={type}
@@ -21,7 +20,6 @@ export const RenderSelect = ({ name, value, onChange, options, label }) => (
   <div className="flex flex-col">
     <label className="text-sm font-medium text-gray-700 mb-1 capitalize">
       {label || name}
-      <span className="text-red-500 ml-1">*</span>
     </label>
     <select
       name={name}

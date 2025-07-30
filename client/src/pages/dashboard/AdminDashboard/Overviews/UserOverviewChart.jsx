@@ -5,8 +5,8 @@ const COLORS = ["#4f46e5", "#16a34a", "#f59e0b"];
 
 const UserOverviewChart = ({ users = [], loading }) => {
   // const totalUsers = users.length;
-  const totalCarOwners = users.filter((user) => user.role === "carOwner").length;
-  const totalOnlyUsers = users.filter((user) => user.role === "user").length;
+  const totalCarOwners = users.filter((user) => user.role === "carOwner" && user.status === "active").length;
+  const totalOnlyUsers = users.filter((user) => user.role === "user" && user.status === "active" ).length;
 
   const data = [
     { name: "Car Owners", value: totalCarOwners },
@@ -20,6 +20,7 @@ const UserOverviewChart = ({ users = [], loading }) => {
       data={data}
       colors={COLORS}
       loading={loading}
+     unit="users"
     />
   );
 };

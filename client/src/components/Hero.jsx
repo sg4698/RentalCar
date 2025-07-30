@@ -76,7 +76,7 @@ export default function Hero() {
         </p>
 
         <div className="flex justify-center gap-6 items-center text-lg font-medium">
-          <span className="text-green-400 text-2xl">${rentalPricePerDay}/day</span>
+          <span className="text-green-400 text-2xl">Rs.{rentalPricePerDay}/day</span>
  
           <span className="text-sm text-green-400">
             | {location || 'Location'} | <span className="text-green-400">Available</span>

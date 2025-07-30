@@ -76,7 +76,7 @@ const login = async (req, res) => {
     }
 
         // ✅ Check if the account is deactivated
-    if (!user.isActive) {
+    if (user.status === "deactivated") {
       return res.status(403).json({
         message: "Your account has been deactivated.Contact by email",
         reason: user.deactivationReason || "No reason provided.",
@@ -127,7 +127,6 @@ const logout = (req, res) => {
 };
 
 // Get all users (For Admin) with pagination, search, and role filter
-
 const getAllUsers = async (req, res) => {
   try {
     // Only allow admin to access

@@ -175,7 +175,7 @@ export default function CreateCar() {
     if (result.meta.requestStatus === "fulfilled") {
       showToast("Car added successfully!");
       await dispatch(fetchCars());
-      navigate("/cars");
+      navigate("/dashboard/owner/my-cars");
     } else {
       showToast("Failed to add car", "error");
     }

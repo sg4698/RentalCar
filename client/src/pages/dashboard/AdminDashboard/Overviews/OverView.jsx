@@ -28,7 +28,7 @@ const Overview = () => {
     users = [],
     loading: userLoading,
   } = useSelector((state) => state.users || {});
-
+const activeUsers = users.filter((user)=> user.status === "active");
   // Fetch overview data once on mount
   const fetchOverviewData = useCallback(() => {
     dispatch(fetchPendingCars());
@@ -48,7 +48,7 @@ const Overview = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard title="All Cars" value={approved.length} color="green" />
-       <StatCard title="All Users" value={users.length} color="green" />
+       <StatCard title="All Users" value={activeUsers.length} color="green" />
       </div>
 
       {/* Charts */}
