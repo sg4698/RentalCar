@@ -63,7 +63,7 @@ const AllUsers = () => {
         >
           <option value="">All Status</option>
           <option value="active">Active</option>
-          <option value="deactivated">Deactivated</option>
+          <option value="inactivate">inactivate</option>
         </select>
       </div>
 

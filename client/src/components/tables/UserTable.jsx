@@ -139,7 +139,7 @@ const UserTable = ({ users }) => {
 
   const handleStatusChange = async (userId, status) => {
     let reason = "";
-    if (status === "deactivated") {
+    if (status === "inactivate") {
       reason = prompt("Enter reason for deactivation:");
       if (!reason) return toast.error("Deactivation reason required");
     }
@@ -147,7 +147,7 @@ const UserTable = ({ users }) => {
     dispatch(updateUserStatus({ userId, status, reason }))
       .unwrap()
       .then(() => {
-        toast.success(`User ${status === "active" ? "activated" : "deactivated"} successfully`);
+        toast.success(`User ${status === "active" ? "activated" : "inactivate"} successfully`);
       })
       .catch((err) => toast.error(err));
   };
@@ -193,17 +193,17 @@ const UserTable = ({ users }) => {
                       onClick={() => openReasonModal(user.deactivationReason)}
                       className="text-red-600 font-semibold hover:underline focus:outline-none"
                     >
-                      Deactivated
+                      inactivate
                     </button>
                   )}
                 </td>
                 <td className="p-3">
                   {user.status === "active" ? (
                     <button
-                      onClick={() => handleStatusChange(user._id, "deactivated")}
+                      onClick={() => handleStatusChange(user._id, "inactivate")}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
-                      Deactivate
+                     inActive
                     </button>
                   ) : (
                     <button

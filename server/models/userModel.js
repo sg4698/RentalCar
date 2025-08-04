@@ -5,20 +5,22 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    phoneNumber: { type: String,default : ""},
+    country: { type: String, default: "" },
     role: {
       type: String,
       enum: ["user", "carOwner", "admin"],
       default: "user",
     },
- status: {
-  type: String,
-  enum: ["active", "deactivated"],
-  default: "active",
-},
-deactivationReason: {
-  type: String,
-  default: "",
-},
+    status: {
+      type: String,
+      enum: ["active", "inactivate"],
+      default: "active",
+    },
+    deactivationReason: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

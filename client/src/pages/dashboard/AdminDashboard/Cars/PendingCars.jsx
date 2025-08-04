@@ -64,7 +64,7 @@ const PendingCars = () => {
 
   const dispatch = useDispatch();
   const { pending, loading } = useSelector((state) => state.adminCar);
-console.log(pending)
+
   useEffect(() => {
     dispatch(fetchPendingCars());
   }, [dispatch]);

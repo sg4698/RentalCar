@@ -1,17 +1,52 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "../../services/axiosInstance";
+import axiosInstance from "../../services/axiosInstance";
 
-// Async thunk to fetch all users (excluding admin)
+// GET profile
+export const getProfile = createAsyncThunk(
+  "user/getProfile",
+  async (_, thunkAPI) => {
+    try {
+      const res = await axiosInstance.get("/users/profile");
+      return res.data.user;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch profile"
+      );
+    }
+  }
+);
+
+// UPDATE profile
+export const updateProfile = createAsyncThunk(
+  "user/updateProfile",
+  async (formData, thunkAPI) => {
+    try {
+      const res = await axiosInstance.put("/users/updateProfile", formData);
+      return res.data.user;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to update profile"
+      );
+    }
+  }
+);
+
+// Async thunk to fetch all users
 export const fetchAllUsers = createAsyncThunk(
   "users/fetchAll",
-  async ({ page = 1, limit = 6, role = "", search = "",status  }, { rejectWithValue }) => {
+  async (
+    { page = 1, limit = 6, role = "", search = "", status },
+    { rejectWithValue }
+  ) => {
     try {
-      const res = await axios.get(`/auth/users`, {
-        params: { page, limit, role, search,status  },
+      const res = await axiosInstance.get(`/auth/users`, {
+        params: { page, limit, role, search, status },
       });
       return res.data;
     } catch (err) {
-      return rejectWithValue(err.response.data.message || "Failed to fetch users");
+      return rejectWithValue(
+        err.response.data.message || "Failed to fetch users"
+      );
     }
   }
 );
@@ -21,8 +56,8 @@ export const updateUserStatus = createAsyncThunk(
   "users/updateUserStatus",
   async ({ userId, status, reason }, thunkAPI) => {
     try {
-      const { data } = await axios.patch(`/auth/status/${userId}`, {
-         status,
+      const { data } = await axiosInstance.patch(`/auth/status/${userId}`, {
+        status,
         reason,
       });
       return data.user;
@@ -41,10 +76,42 @@ const userSlice = createSlice({
     currentPage: 1,
     loading: false,
     error: null,
+    updateSuccess: false,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // getPRofile
+      .addCase(getProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(getProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // UpdateProfile
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.updateSuccess = false;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.updateSuccess = true;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.updateSuccess = false;
+      })
+
+      // Fetch AllUser for Admin
       .addCase(fetchAllUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -60,7 +127,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
+      // UpdateAllUser For Admin
       .addCase(updateUserStatus.pending, (state) => {
         state.loading = true;
         state.error = null;

@@ -1,99 +1,3 @@
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import { ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-// import CarList from "./pages/Car/CarList";
-// import CreateCar from "./pages/Car/CreateCar";
-// import Navbar from "./components/Navbar";
-// import Home from "./pages/Home";
-// import AdminDashboard from "./pages/dashboard/AdminDashboard/AdminDashboard";
-// import CarOwnerDashboard from "./pages/dashboard/CarOwnerDashboard/CarOwnerDashboard";
-// import UserDashboard from "./pages/dashboard/UserDashboard";
-// import ProtectedRoute from "./components/ProtectedRoute";
-// import Login from "./pages/auth/Login";
-// import Register from "./pages/auth/Register";
-
-// // CarOwner
-// import Overview from "./pages/dashboard/CarOwnerDashboard/overview";
-// import MyCars from "./pages/dashboard/CarOwnerDashboard/Mycars";
-
-// import Bookings from "./pages/dashboard/CarOwnerDashboard/Bookings";
-// import Earnings from "./pages/dashboard/CarOwnerDashboard/Earnings";
-// import Messages from "./pages/dashboard/CarOwnerDashboard/Messages";
-// import Reviews from "./pages/dashboard/CarOwnerDashboard/Reviews";
-// import Profile from "./pages/dashboard/CarOwnerDashboard/Profile";
-// import Notifications from "./pages/dashboard/CarOwnerDashboard/Notifications";
-// import Support from "./pages/dashboard/CarOwnerDashboard/Support";
-// import AddCar from "./pages/dashboard/CarOwnerDashboard/AddCar";
-// import { useDispatch } from "react-redux";
-// import { useEffect } from "react";
-// import { getCurrentUser } from "./features/auth/authSlice";
-
-// function App() {
-//    const dispatch = useDispatch();
-
-//   useEffect(() => {
-//     dispatch(getCurrentUser()).then((res)=>{
-//       console.log("Get User response",res)
-//     });
-//   }, [dispatch]);
-
-//   return (
-//     <BrowserRouter>
-//       <ToastContainer />
-//       <Navbar />
-//       <Routes>
-//         <Route path="/" element={<Home />} />
-//         <Route path="/login" element={<Login />} />
-//         <Route path="/register" element={<Register />} />
-//         <Route
-//           path="/dashboard/user"
-//           element={
-//             <ProtectedRoute allowedRoles={["user"]}>
-//               <UserDashboard />
-//             </ProtectedRoute>
-//           }
-//         />
-
-
-//  {/* Car Owner Dashboard with Nested Routes */}
-//         <Route
-//           path="/dashboard/owner"
-//           element={
-//             <ProtectedRoute allowedRoles={["carOwner"]}>
-//               <CarOwnerDashboard />
-//             </ProtectedRoute>
-//           }
-//         >
-//           <Route path="overview" element={<Overview />} />
-//           <Route path="my-cars" element={<MyCars />} />
-//           <Route path="createCar" element={<AddCar />} />
-//           <Route path="bookings" element={<Bookings />} />
-//           <Route path="earnings" element={<Earnings />} />
-//           <Route path="messages" element={<Messages />} />
-//           <Route path="reviews" element={<Reviews />} />
-//           <Route path="notifications" element={<Notifications />} />
-//           <Route path="profile" element={<Profile />} />
-//           <Route path="support" element={<Support />} />
-//         </Route>
-//         <Route
-//           path="/dashboard/admin"
-//           element={
-//             <ProtectedRoute allowedRoles={["admin"]}>
-//               <AdminDashboard/>
-//             </ProtectedRoute>
-//           }
-//         />
-
-        
-//         <Route path="/cars" element={<CarList />} />
-//         <Route path="createCar" element={<CreateCar />} />
-
-//       </Routes>
-//     </BrowserRouter>
-//   );
-// }
-
-// export default App;
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -102,7 +6,7 @@ import CarList from "./pages/Car/CarList";
 import CreateCar from "./pages/Car/CreateCar";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-
+import Profile from "./components/Profile";
 // Auth & Dashboard Components
 import AdminDashboard from "./pages/dashboard/AdminDashboard/AdminDashboard";
 import Overview from "./pages/dashboard/AdminDashboard/Overviews/OverView";
@@ -129,14 +33,13 @@ import Notifications from "./pages/dashboard/AdminDashboard/Notifications/Notifi
 import Support from "./pages/dashboard/AdminDashboard/Support/Support";
 import TermsConditions from "./pages/dashboard/AdminDashboard/CMS/TermsConditions";
 import HomeBanner from "./pages/dashboard/AdminDashboard/CMS/HomeBanner";
-import AdminProfile from "./pages/dashboard/AdminDashboard/Profile/AdminProfile";
-import ChangePassword from "./pages/dashboard/AdminDashboard/Profile/ChangePassword";
+
 import GeneralSettings from "./pages/dashboard/AdminDashboard/Settings/GeneralSettings";
 import RolePermissions from "./pages/dashboard/AdminDashboard/Settings/RolePermissions";
 import PaymentSettings from "./pages/dashboard/AdminDashboard/Settings/PaymentSettings";
 
 import CarOwnerDashboard from "./pages/dashboard/CarOwnerDashboard/CarOwnerDashboard";
-import UserDashboard from "./pages/dashboard/UserDashboard";
+import UserDashboard from "./pages/dashboard/UserDashboard/UserDashboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/auth/Login";
@@ -149,7 +52,6 @@ import Bookings from "./pages/dashboard/CarOwnerDashboard/Bookings";
 import Earnings from "./pages/dashboard/CarOwnerDashboard/Earnings";
 import Messages from "./pages/dashboard/CarOwnerDashboard/Messages";
 import Reviews from "./pages/dashboard/CarOwnerDashboard/Reviews";
-import Profile from "./pages/dashboard/CarOwnerDashboard/Profile";
 import NotificationsCO from "./pages/dashboard/CarOwnerDashboard/Notifications";
 import SupportCO from "./pages/dashboard/CarOwnerDashboard/Support";
 import AddCar from "./pages/dashboard/CarOwnerDashboard/AddCar";
@@ -164,9 +66,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCurrentUser()).then((res) => {
-      console.log("Get User response", res);
-    });
+    dispatch(getCurrentUser());
   }, [dispatch]);
 
   return (
@@ -186,7 +86,9 @@ function App() {
               <UserDashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="profile" element={<Profile />} />
+        </Route>
 
         {/* Car Owner Dashboard */}
         <Route
@@ -200,7 +102,7 @@ function App() {
           <Route path="overview" element={<COOverview />} />
           <Route path="my-cars" element={<MyCars />} />
           <Route path="createCar" element={<AddCar />} />
-          <Route path="update-car/:id" element={<EditCar/>} />
+          <Route path="update-car/:id" element={<EditCar />} />
           <Route path="bookings" element={<Bookings />} />
           <Route path="earnings" element={<Earnings />} />
           <Route path="messages" element={<Messages />} />
@@ -227,9 +129,9 @@ function App() {
           <Route path="users/banned" element={<BannedUsers />} />
 
           {/* Car Management */}
-           <Route path="cars/pending" element={<PendingCars />} />
-                     <Route path="cars/approved" element={<ApprovedCars />} />
-                               <Route path="cars/rejected" element={<RejectedCars />} />
+          <Route path="cars/pending" element={<PendingCars />} />
+          <Route path="cars/approved" element={<ApprovedCars />} />
+          <Route path="cars/rejected" element={<RejectedCars />} />
           {/* <Route path="cars" element={<AllCars />} /> */}
           {/* <Route path="cars/pending" element={<PendingCars />} /> */}
           <Route path="cars/edit" element={<EditCar />} />
@@ -253,7 +155,6 @@ function App() {
 
           {/* Reviews */}
           <Route path="reviews" element={<AllReviews />} />
-   
 
           {/* Notifications */}
           <Route path="notifications" element={<Notifications />} />
@@ -264,10 +165,6 @@ function App() {
           {/* CMS */}
           <Route path="cms/terms" element={<TermsConditions />} />
           <Route path="cms/banner" element={<HomeBanner />} />
-
-          {/* Profile */}
-          <Route path="profile" element={<AdminProfile />} />
-          <Route path="profile/password" element={<ChangePassword />} />
 
           {/* Settings */}
           <Route path="settings/general" element={<GeneralSettings />} />

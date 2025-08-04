@@ -177,7 +177,7 @@ const CarTable = ({ cars, type, onApprove, onReject, role = "user" }) => {
     const navigate = useNavigate();
 
   const showOwner = role === "admin";
-  console.log("Car Table", role);
+ 
 
   return (
     <div className="overflow-x-auto shadow rounded-lg">

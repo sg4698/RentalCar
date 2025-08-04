@@ -76,7 +76,7 @@ const login = async (req, res) => {
     }
 
         // ✅ Check if the account is deactivated
-    if (user.status === "deactivated") {
+    if (user.status === "inactivate") {
       return res.status(403).json({
         message: "Your account has been deactivated.Contact by email",
         reason: user.deactivationReason || "No reason provided.",
@@ -117,6 +117,7 @@ const getCurrentUser = async (req, res) => {
   });
 };
 
+
 const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
@@ -147,7 +148,7 @@ const getAllUsers = async (req, res) => {
     }
 
         // Optional isActive filter
-  if (status && ["active", "deactivated"].includes(status)) {
+  if (status && ["active", "inactivate"].includes(status)) {
   query.status = status;
 }
     // Optional search filter (name or email)
@@ -186,7 +187,7 @@ const updateUserStatus = async (req, res) => {
     const { status, reason } = req.body;
     const adminId = req.user._id;
 
-    if (!["active", "deactivated"].includes(status)) {
+    if (!["active", "inactivate"].includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
 
@@ -197,7 +198,7 @@ const updateUserStatus = async (req, res) => {
 
     user.status = status;
 
-    if (status === "deactivated") {
+    if (status === "inactivate") {
       user.deactivationReason = reason || "No reason provided";
     } else {
       user.deactivationReason = "";
@@ -206,7 +207,7 @@ const updateUserStatus = async (req, res) => {
     await user.save();
 
     res.status(200).json({
-      message: `User ${status === "active" ? "activated" : "deactivated"} successfully`,
+      message: `User ${status === "active" ? "activated" : "inactivate"} successfully`,
       user,
     });
   } catch (err) {
