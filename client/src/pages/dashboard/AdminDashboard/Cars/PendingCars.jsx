@@ -16,7 +16,7 @@
 //   }, [dispatch]);
 
 //   const handleApprove = (id) => {
-//     dispatch(approveCar(id));
+//     dispzatch(approveCar(id));
 //   };
 
 //   const handleReject = (id, reason) => {
@@ -67,6 +67,7 @@ const PendingCars = () => {
 
   useEffect(() => {
     dispatch(fetchPendingCars());
+    console.log(fetchPendingCars);
   }, [dispatch]);
 
   const handleApprove = async (id) => {

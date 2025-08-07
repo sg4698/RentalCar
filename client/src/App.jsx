@@ -61,6 +61,7 @@ import { useEffect } from "react";
 import { getCurrentUser } from "./features/auth/authSlice";
 import EditCar from "./pages/Car/EditCar";
 import CarDetails from "./components/carDetails";
+import AllCars from "./pages/dashboard/AdminDashboard/Cars/AllCars";
 
 function App() {
   const dispatch = useDispatch();
@@ -129,6 +130,7 @@ function App() {
           <Route path="users/banned" element={<BannedUsers />} />
 
           {/* Car Management */}
+          <Route path="cars/AllCars" element={<AllCars />} />
           <Route path="cars/pending" element={<PendingCars />} />
           <Route path="cars/approved" element={<ApprovedCars />} />
           <Route path="cars/rejected" element={<RejectedCars />} />
