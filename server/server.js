@@ -6,6 +6,7 @@ const connectDB = require("./config/connectDB")
 const carRoutes = require("./routes/carRoutes")
 const authRoutes = require("./routes/authRoutes")
 const userRoutes = require("./routes/userRoute")
+const adminRoutes = require("./routes/adminRoutes")
 const app = express();
 
 // app.use(cors());
@@ -19,7 +20,7 @@ app.use(cookieParser())
 app.use('/api/cars', carRoutes);
 app.use('/api/auth', authRoutes);
 app.use("/api/users", userRoutes);
-
+app.use("/api/admin/cars",adminRoutes);
 
 
 const PORT = process.env.PORT || 8080;

@@ -34,7 +34,7 @@ export const fetchRejectedCars = createAsyncThunk("adminCar/fetchRejected", asyn
 // ✅ Approve car
 export const approveCar = createAsyncThunk("adminCar/approve", async (id, thunkAPI) => {
   try {
-    const res = await axioInstance.patch(`/cars/approve/${id}`);
+    const res = await axioInstance.patch(`/admin/cars/approve/${id}`);
     return res.data.car;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data?.message || err.message);
@@ -44,7 +44,7 @@ export const approveCar = createAsyncThunk("adminCar/approve", async (id, thunkA
 // ✅ Reject car
 export const rejectCar = createAsyncThunk("adminCar/reject", async ({ id, reason }, thunkAPI) => {
   try {
-    const res = await axioInstance.patch(`/cars/reject/${id}`, { reason });
+    const res = await axioInstance.patch(`/admin/cars/reject/${id}`, { reason });
     return res.data.car;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data?.message || err.message);
