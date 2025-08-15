@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getMyCars, deleteCar } from "../../../features/cars/carSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import CarCardOwner from "../../../components/CarCardOwner"; // ✅ updated import
+import CarTable from "../../../components/CarTable"; // ✅ Reusable Car Table
 
 const MyCars = () => {
   const dispatch = useDispatch();
@@ -32,11 +32,11 @@ const MyCars = () => {
     }
   };
 
-  // ✅ Filter logic
+  // ✅ Filter logic based on status
   const filteredCars = myCars?.filter((car) => {
-    if (filter === "Approved") return car.isApproved;
-    if (filter === "Pending") return !car.isApproved && !car.rejectionReason;
-    if (filter === "Rejected") return !car.isApproved && car.rejectionReason;
+    if (filter === "Approved") return car.status === "approved";
+    if (filter === "Pending") return car.status === "pending";
+    if (filter === "Rejected") return car.status === "rejected";
     return true;
   });
 
@@ -72,25 +72,22 @@ const MyCars = () => {
         </div>
       )}
 
-      {/* Car Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredCars?.length > 0 ? (
-          filteredCars.map((car) => (
-            <CarCardOwner
-              key={car._id}
-              car={car}
-              onEdit={() => handleEdit(car)}
-              onDelete={() => handleDelete(car._id)}
-            />
-          ))
-        ) : (
-          <div className="col-span-full text-center mt-20">
-            <p className="text-gray-500 text-lg">
-              No cars found in this category.
-            </p>
-          </div>
-        )}
-      </div>
+      {/* ✅ Car Table Integration */}
+      {filteredCars?.length > 0 ? (
+        <CarTable
+          cars={filteredCars}
+          role="carOwner"
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          showStatus
+        />
+      ) : (
+        <div className="col-span-full text-center mt-20">
+          <p className="text-gray-500 text-lg">
+            No cars found in this category.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

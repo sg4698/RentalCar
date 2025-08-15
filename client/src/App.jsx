@@ -12,11 +12,10 @@ import AdminDashboard from "./pages/dashboard/AdminDashboard/AdminDashboard";
 import Overview from "./pages/dashboard/AdminDashboard/Overviews/OverView";
 import AllUsers from "./pages/dashboard/AdminDashboard/Users/AllUsers";
 import BannedUsers from "./pages/dashboard/AdminDashboard/Users/BannedUsers";
-import PendingCars from "./pages/dashboard/AdminDashboard/Cars/PendingCars";
-import ApprovedCars from "./pages/dashboard/AdminDashboard/Cars/ApprovedCars";
-import RejectedCars from "./pages/dashboard/AdminDashboard/Cars/RejectCars";
-// import AllCars from "./pages/dashboard/AdminDashboard/Cars/AllCars";
-// import PendingCars from "./pages/dashboard/AdminDashboard/Cars/PendingApprovals";
+// import PendingCars from "./pages/dashboard/AdminDashboard/Cars/PendingCars";
+// import ApprovedCars from "./pages/dashboard/AdminDashboard/Cars/ApprovedCars";
+// import RejectedCars from "./pages/dashboard/AdminDashboard/Cars/RejectCars";
+
 import AllBookings from "./pages/dashboard/AdminDashboard/Bookings/AllBookings";
 import FraudulentBookings from "./pages/dashboard/AdminDashboard/Bookings/FraudulentBookings";
 import PlatformEarnings from "./pages/dashboard/AdminDashboard/Earnings/PlatformEarnings";
@@ -28,7 +27,7 @@ import EarningsReport from "./pages/dashboard/AdminDashboard/Reports/EarningsRep
 import UserActivity from "./pages/dashboard/AdminDashboard/Reports/UserActivity";
 import BookingTrends from "./pages/dashboard/AdminDashboard/Reports/BookingTrends";
 import AllReviews from "./pages/dashboard/AdminDashboard/Reviews/AllReviews";
-// import AbusiveReviews from "./pages/dashboard/AdminDashboard/Reviews/AbusiveReviews";
+
 import Notifications from "./pages/dashboard/AdminDashboard/Notifications/Notifications";
 import Support from "./pages/dashboard/AdminDashboard/Support/Support";
 import TermsConditions from "./pages/dashboard/AdminDashboard/CMS/TermsConditions";
@@ -131,11 +130,10 @@ function App() {
 
           {/* Car Management */}
           <Route path="cars/AllCars" element={<AllCars />} />
-          <Route path="cars/pending" element={<PendingCars />} />
+          {/* <Route path="cars/pending" element={<PendingCars />} />
           <Route path="cars/approved" element={<ApprovedCars />} />
-          <Route path="cars/rejected" element={<RejectedCars />} />
-          {/* <Route path="cars" element={<AllCars />} /> */}
-          {/* <Route path="cars/pending" element={<PendingCars />} /> */}
+          <Route path="cars/rejected" element={<RejectedCars />} /> */}
+      
           <Route path="cars/edit" element={<EditCar />} />
           {/* Bookings Management */}
           <Route path="bookings" element={<AllBookings />} />

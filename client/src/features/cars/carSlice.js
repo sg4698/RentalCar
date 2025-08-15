@@ -14,9 +14,13 @@ export const createCar = createAsyncThunk("car/createCar", async (formData) => {
 
 
 // Fetch all cars
-export const fetchCars = createAsyncThunk("car/fetchCars", async () => {
-  const res = await axioInstance.get("/cars/getAllCars");
-  return res.data.cars;
+export const fetchCars = createAsyncThunk("car/fetchCars", async (_, thunkAPI) => {
+  try {
+    const res = await axioInstance.get("/cars/getAllCars");
+    return res.data.cars;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response?.data?.message || err.message);
+  }
 });
 // Delete car
 export const deleteCar = createAsyncThunk("/cars/deleteCar", async (carId) => {

@@ -127,96 +127,10 @@ const logout = (req, res) => {
   res.status(200).json({ message: "Logged out successfully" });
 };
 
-// Get all users (For Admin) with pagination, search, and role filter
-const getAllUsers = async (req, res) => {
-  try {
-    // Only allow admin to access
-    // if (req.user?.role !== "admin") {
-    //   return res.status(403).json({ message: "Access denied" });
-    // }
-   
-
-    const { page = 1, limit = 6, role, search,status } = req.query;
-
-    const query = {
-      role: { $ne: "admin" }, // ✅ Always exclude admin users
-    };
-
-    // Optional role filter (only if not "admin")
-    if (role && role !== "admin") {
-      query.role = role;
-    }
-
-        // Optional isActive filter
-  if (status && ["active", "inactivate"].includes(status)) {
-  query.status = status;
-}
-    // Optional search filter (name or email)
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-      ];
-    }
-
-    const totalUsers = await User.countDocuments(query);
-
-    const users = await User.find(query)
-      .skip((page - 1) * limit)
-      .limit(Number(limit))
-      .select("-password") // Do not return passwords
-       .select("name email role status deactivationReason") 
-      .sort({ createdAt: -1 }); // Latest first
-
-    res.status(200).json({
-      users,
-      totalPages: Math.ceil(totalUsers / limit),
-      currentPage: Number(page),
-      totalUsers,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 
 
 
-const updateUserStatus = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const { status, reason } = req.body;
-    const adminId = req.user._id;
-
-    if (!["active", "inactivate"].includes(status)) {
-      return res.status(400).json({ message: "Invalid status" });
-    }
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    user.status = status;
-
-    if (status === "inactivate") {
-      user.deactivationReason = reason || "No reason provided";
-    } else {
-      user.deactivationReason = "";
-    }
-
-    await user.save();
-
-    res.status(200).json({
-      message: `User ${status === "active" ? "activated" : "inactivate"} successfully`,
-      user,
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err.message });
-  }
-};
-
-
-module.exports = { register, login, logout ,getCurrentUser,getAllUsers,updateUserStatus};
+module.exports = { register, login, logout ,getCurrentUser};
 
 
 

@@ -54,9 +54,10 @@ const carSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  availability: {
-    type: Boolean,
-    default: true,
+    availability: {
+    type: String,
+    enum: ['available', 'Unavailable', 'maintenance'],
+    default: 'available',
     index: true
   },
   location: {
@@ -68,9 +69,10 @@ const carSchema = new mongoose.Schema({
     public_id: { type: String },
     url: { type: String }
   },
-  isApproved: {
-    type: Boolean,
-    default: false,
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending',
     index: true
   },
   ownerId: {
@@ -95,7 +97,7 @@ carSchema.index({
   model: 1,
   car_name: 1,
   color: 1,
-  isApproved: 1
+  status: 1
 });
 
 const Car = mongoose.model("Car", carSchema);

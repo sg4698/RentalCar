@@ -39,7 +39,7 @@ export const fetchAllUsers = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await axiosInstance.get(`/auth/users`, {
+      const res = await axiosInstance.get(`/users/getusers`, {
         params: { page, limit, role, search, status },
       });
       return res.data;
@@ -56,7 +56,7 @@ export const updateUserStatus = createAsyncThunk(
   "users/updateUserStatus",
   async ({ userId, status, reason }, thunkAPI) => {
     try {
-      const { data } = await axiosInstance.patch(`/auth/status/${userId}`, {
+      const { data } = await axiosInstance.patch(`/users/status/${userId}`, {
         status,
         reason,
       });

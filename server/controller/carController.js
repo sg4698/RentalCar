@@ -1,12 +1,11 @@
 const Car = require("../models/carModel");
 const uploadToCloudinary = require("../middleware/cloudinary");
 const cloudinary = require("cloudinary").v2;
-// const cloudinary = require("cloudinary").v2;
 
 // Create Car
 const createCar = async (req, res) => {
   try {
-   const {
+    const {
       car_name,
       brand,
       registrationNumber,
@@ -20,11 +19,12 @@ const createCar = async (req, res) => {
       location,
     } = req.body;
 
-    // For validation
-  if (!car_name || !brand || !registrationNumber || !color || !type ||
+    // Validation for required fields
+    if (
+      !car_name || !brand || !registrationNumber || !color || !type ||
       !seats || !fuelType || !transmission || !mileage || !rentalPricePerDay || !location
-    ){
-      return res.status(400).json({message: "All fields are required"})
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
     // Validation for Image
@@ -37,15 +37,13 @@ const createCar = async (req, res) => {
       req.files.map(file => uploadToCloudinary(file.buffer))
     );
 
-    
-    
-     // Save only the first image (or you can support multiple images if needed)
+    // Save only the first image
     const image = {
-      public_id:uploadResults[0]. public_id,
-      url:uploadResults[0].url,
-    }
+      public_id: uploadResults[0].public_id,
+      url: uploadResults[0].url,
+    };
 
-     const newCar = new Car({
+    const newCar = new Car({
       ownerId: req.user?.id || null,
       car_name,
       brand,
@@ -59,49 +57,50 @@ const createCar = async (req, res) => {
       rentalPricePerDay,
       location,
       image,
-     isApproved: false //Default approval false
+      status: "pending", // Default status
+      availability: "available" // Default availability
     });
 
     await newCar.save();
 
     res.status(201).json({
-      message: "Car created Successfully",
-      car:newCar,
+      message: "Car created successfully",
+      car: newCar,
     });
   } catch (error) {
-    console.log("Error creating car:",error.message)
+    console.log("Error creating car:", error.message);
     res.status(500).json({
       error: error.message,
     });
   }
 };
-  
 
-// GET All Cars with Pagination
+
+
 const getAllCars = async (req, res) => {
   try {
-    // Query Params
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-
     const skip = (page - 1) * limit;
 
-    // Optionally, support filtering (e.g., by type or brand)
     const filter = {};
     if (req.query.type) filter.type = req.query.type;
     if (req.query.brand) filter.brand = req.query.brand;
+    if (req.query.status) filter.status = req.query.status;
 
-      // Role-based filtering
-if (!req.user || req.user.role === "user") {
-  filter.isApproved = true;
-}
+    // Role-based filtering: only show approved cars to public users
+    if (!req.user || req.user.role === "user") {
+      filter.status = "approved";
+    }
+    // Admins get all cars regardless of status, so no additional filter
 
     const total = await Car.countDocuments(filter);
 
     const cars = await Car.find(filter)
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 }); // latest first
+      .sort({ createdAt: -1 })
+      .populate("ownerId", "name email"); // optional: populate owner info
 
     res.status(200).json({
       success: true,
@@ -117,7 +116,10 @@ if (!req.user || req.user.role === "user") {
   }
 };
 
-// For CarOwner(Approve or rejected,pendings)
+
+
+
+// For CarOwner
 const getMyCars = async (req, res) => {
   try {
     const cars = await Car.find({ ownerId: req.user.id });
@@ -128,7 +130,6 @@ const getMyCars = async (req, res) => {
   }
 };
 
-
 // Get Car by ID
 const getCarById = async (req, res) => {
   try {
@@ -137,7 +138,7 @@ const getCarById = async (req, res) => {
     const car = await Car.findById(id)
       .select("car_name brand registrationNumber color type seats fuelType transmission mileage rentalPricePerDay location image ownerId")
       .populate("ownerId", "name email");
-  
+
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
     }
@@ -149,48 +150,42 @@ const getCarById = async (req, res) => {
   }
 };
 
-
-
 // Update Car
-const updateCar = async (req,res) => {
+const updateCar = async (req, res) => {
   try {
-    const {id} = req.params;
-
+    const { id } = req.params;
     let car = await Car.findById(id);
-    
-    if(!car){
-      return res.status(404).json({message: "Car not found"});
+
+    if (!car) {
+      return res.status(404).json({ message: "Car not found" });
     }
 
-    // If new image is uploaded,replace with old one
-     if(req.files && req.files.length > 0){
-        //  Delete the old image from Cloudinary
-         if(car.image && car.image.public_id){
-          await cloudinary.uploader.destroy(car.image.public_id)
-         }
+    // If new image is uploaded, replace with old one
+    if (req.files && req.files.length > 0) {
+      if (car.image && car.image.public_id) {
+        await cloudinary.uploader.destroy(car.image.public_id);
+      }
 
-        // Upload new Image
-        const uploadResults = await Promise.all(
-          req.files.map(file => uploadToCloudinary(file.buffer))
-        );
+      const uploadResults = await Promise.all(
+        req.files.map(file => uploadToCloudinary(file.buffer))
+      );
 
-        car.image = {
-          public_id: uploadResults[0].public_id,
-          url: uploadResults[0].url,
-        };
-     }
+      car.image = {
+        public_id: uploadResults[0].public_id,
+        url: uploadResults[0].url,
+      };
+    }
 
-
-    //  Update Other Fields
-     const fields = [
-        "car_name", "brand", "registrationNumber", "color", "type",
-      "seats", "fuelType", "transmission", "mileage", "rentalPricePerDay", "location"
+    // Update Other Fields
+    const fields = [
+      "car_name", "brand", "registrationNumber", "color", "type",
+      "seats", "fuelType", "transmission", "mileage", "rentalPricePerDay", "location", "availability"
     ];
 
     fields.forEach(field => {
-       if(req.body[field] !== undefined){
+      if (req.body[field] !== undefined) {
         car[field] = req.body[field];
-       }
+      }
     });
 
     await car.save();
@@ -202,99 +197,89 @@ const updateCar = async (req,res) => {
   }
 };
 
-const deleteCar = async (req,res) => {
+const deleteCar = async (req, res) => {
   try {
-    const {id} = req.params;
-    // 1. Find the car
+    const { id } = req.params;
     const car = await Car.findById(id);
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
     }
 
-    // // Delete image from Cloudinary
-    //     if (car.image && car.image.public_id) {
-    //   await cloudinary.uploader.destroy(car.image.public_id);
-    // }
-     
     await Car.findByIdAndDelete(id);
-     res.status(200).json({ message: "Car deleted successfully" });
+    res.status(200).json({ message: "Car deleted successfully" });
   } catch (error) {
-     console.error("Error deleting car:", error.message);
+    console.error("Error deleting car:", error.message);
     res.status(500).json({ error: error.message });
   }
-}
+};
 
-
-
-//ApproveCar For Admin
-const approveCar = async (req,res) => {
-   try {
-    const {id}  = req.params;
-
+// Approve Car (Admin)
+const approveCar = async (req, res) => {
+  try {
+    const { id } = req.params;
     const car = await Car.findById(id);
-     if(!car){
+
+    if (!car) {
       return res.status(404).json({ message: "Car not found" });
-     }
-      car.isApproved = true;
-      // car.rejectionReason = null;
+    }
+
+    car.status = "approved";
+    car.rejectionReason = null;
 
     await car.save();
 
-        res.status(200).json({ message: "Car approved successfully", car });
-   } catch (error) {
-      console.error("Error approving car:", error.message);
+    res.status(200).json({ message: "Car approved successfully", car });
+  } catch (error) {
+    console.error("Error approving car:", error.message);
     res.status(500).json({ error: error.message });
-   }
-}
+  }
+};
 
-
-//reject Car by Admin
-const rejectCar = async (req,res) => {
-   try {
-    const {id} = req.params;
+// Reject Car (Admin)
+const rejectCar = async (req, res) => {
+  try {
+    const { id } = req.params;
     const { reason } = req.body;
 
-    if(!reason){
-      return res.status(400).json({
-        message:{
-          message: "Rejection reason is required"
-        }
-      })
+    if (!reason) {
+      return res.status(400).json({ message: "Rejection reason is required" });
     }
 
     const car = await Car.findById(id);
-    if(!car) {
-      return res.status(404).json({message: "Car not Found"})
+    if (!car) {
+      return res.status(404).json({ message: "Car not found" });
     }
 
-    car.isApproved  = false;
+    car.status = "rejected";
     car.rejectionReason = reason;
 
     await car.save();
-      res.status(200).json({ message: "Car rejected successfully", car });
-   } catch (error) {
+
+    res.status(200).json({ message: "Car rejected successfully", car });
+  } catch (error) {
     res.status(500).json({ error: error.message });
-   }
-}
-// For Admin to We Pending Cars for Admin
+  }
+};
+
+// Admin: Get Pending Cars
 const getPendingCars = async (req, res) => {
   try {
- const pendingCars = await Car.find({ isApproved: false, rejectionReason: null })
+    const pendingCars = await Car.find({ status: "pending" })
       .populate("ownerId", "name email");
- res.status(200).json({ cars: pendingCars });
 
+    res.status(200).json({ cars: pendingCars });
   } catch (error) {
     console.error("Error fetching pending cars:", error.message);
     res.status(500).json({ error: error.message });
   }
 };
 
-// Admin: Get all approved cars
+// Admin: Get Approved Cars
 const getApprovedCars = async (req, res) => {
   try {
-      const approvedCars = await Car.find({ isApproved: true })
+    const approvedCars = await Car.find({ status: "approved" })
       .populate("ownerId", "name email");
-     
+
     res.status(200).json({ cars: approvedCars });
   } catch (error) {
     console.error("Error fetching approved cars:", error.message);
@@ -302,13 +287,12 @@ const getApprovedCars = async (req, res) => {
   }
 };
 
-// Admin: Get all rejected cars
+// Admin: Get Rejected Cars
 const getRejectedCars = async (req, res) => {
   try {
-    const rejectedCars = await Car.find({
-      isApproved: false,
-      rejectionReason: { $ne: null },
-    }).populate("ownerId", "name email");
+    const rejectedCars = await Car.find({ status: "rejected" })
+      .populate("ownerId", "name email");
+
     res.status(200).json({ cars: rejectedCars });
   } catch (error) {
     console.error("Error fetching rejected cars:", error.message);
@@ -316,10 +300,8 @@ const getRejectedCars = async (req, res) => {
   }
 };
 
-
-
-module.exports = { 
-  createCar, 
+module.exports = {
+  createCar,
   getAllCars,
   updateCar,
   deleteCar,
@@ -330,4 +312,4 @@ module.exports = {
   rejectCar,
   getApprovedCars,
   getRejectedCars
-}
+};

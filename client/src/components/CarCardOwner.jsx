@@ -6,7 +6,8 @@ const CarCardOwner = ({ car, onEdit, onDelete }) => {
   const [showReason, setShowReason] = useState(false);
 
   const renderStatus = () => {
-    if (!car.isApproved && !car.rejectionReason) {
+    // Pending Approval
+    if (car.status === "pending") {
       return (
         <span className="flex items-center gap-1 bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full">
           <FaClock className="text-yellow-600" /> Pending Approval
@@ -14,14 +15,15 @@ const CarCardOwner = ({ car, onEdit, onDelete }) => {
       );
     }
 
-    if (!car.isApproved && car.rejectionReason) {
+    // Rejected
+    if (car.status === "rejected" && car.rejectionReason) {
       return (
         <div className="flex flex-col items-end">
           <button
             className="text-xs text-red-600 font-semibold underline hover:text-red-800"
             onClick={() => setShowReason((prev) => !prev)}
           >
-            Reject
+            Rejected
           </button>
 
           {showReason && (
@@ -34,27 +36,34 @@ const CarCardOwner = ({ car, onEdit, onDelete }) => {
       );
     }
 
+    // Approved → No extra label (you can add one if needed)
     return null;
   };
 
-  const actions = car.rejectionReason ? (
-    <div className="text-sm text-red-500 font-medium italic">No actions allowed</div>
-  ) : (
-    <div className="flex gap-2 text-sm mt-3">
-      <button
-        onClick={() => onEdit?.(car)}
-        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-500 transition"
-      >
-        Edit
-      </button>
-      <button
-        onClick={() => onDelete?.(car)}
-        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition"
-      >
-        Delete
-      </button>
-    </div>
-  );
+  // If rejected, block actions
+  const actions =
+    car.status === "rejected"
+      ? (
+        <div className="text-sm text-red-500 font-medium italic">
+          No actions allowed
+        </div>
+      )
+      : (
+        <div className="flex gap-2 text-sm mt-3">
+          <button
+            onClick={() => onEdit?.(car)}
+            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-500 transition"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => onDelete?.(car)}
+            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition"
+          >
+            Delete
+          </button>
+        </div>
+      );
 
   return (
     <CarCardBase
